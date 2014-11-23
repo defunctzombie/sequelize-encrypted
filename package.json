@@ -1,0 +1,27 @@
+{
+  "name": "sequelize-encrypted",
+  "version": "0.0.0",
+  "description": "encrypted sequelize fields",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --ui qunit --reporter list --check-leaks --bail -- test/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/defunctzombie/sequelize-encrypted.git"
+  },
+  "keywords": [
+    "sequelize",
+    "encrypted"
+  ],
+  "author": "Roman Shtylman <shtylman@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/defunctzombie/sequelize-encrypted/issues"
+  },
+  "homepage": "https://github.com/defunctzombie/sequelize-encrypted",
+  "devDependencies": {
+    "mocha": "2.0.1",
+    "sequelize": "2.0.0-rc2"
+  }
+}
