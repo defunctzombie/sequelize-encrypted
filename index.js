@@ -2,7 +2,7 @@ var crypto = require('crypto');
 
 function EncryptedField(Sequelize, key, opt) {
     if (!(this instanceof EncryptedField)) {
-        return new EncryptedField(Sequelize, key);
+        return new EncryptedField(Sequelize, key, opt);
     }
 
     var self = this;
