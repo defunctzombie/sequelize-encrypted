@@ -12,10 +12,17 @@ function EncryptedField(Sequelize, key, opt) {
     opt = opt || {};
     self._algorithm = opt.algorithm || 'aes-256-cbc';
     self._iv_length = opt.iv_length || 16;
+    self.encrypted_field_name = undefined;
 };
 
 EncryptedField.prototype.vault = function(name) {
     var self = this;
+
+    if (self.encrypted_field_name) {
+        throw new Error('vault already initialized');
+    }
+
+    self.encrypted_field_name = name;
 
     return {
         type: self.Sequelize.BLOB,
@@ -50,17 +57,22 @@ EncryptedField.prototype.vault = function(name) {
 EncryptedField.prototype.field = function(name) {
     var self = this;
 
+    if (!self.encrypted_field_name) {
+        throw new Error('you must initialize the vault field before using encrypted fields');
+    }
+    var encrypted_field_name = self.encrypted_field_name;
+
     return {
         type: self.Sequelize.VIRTUAL,
         set: function set_encrypted(val) {
             // use `this` not self because we need to reference the sequelize instance
             // not our EncryptedField instance
-            var encrypted = this.encrypted;
+            var encrypted = this[encrypted_field_name];
             encrypted[name] = val;
-            this.encrypted = encrypted;
+            this[encrypted_field_name] = encrypted;
         },
         get: function get_encrypted() {
-            var encrypted = this.encrypted;
+            var encrypted = this[encrypted_field_name];
             return encrypted[name];
         }
     }

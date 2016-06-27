@@ -3,7 +3,7 @@
 Encrypted fields for Sequelize ORM
 
 ```js
-var Sequelize = require('sequelize')
+var Sequelize = require('sequelize');
 var EncryptedField = require('sequelize-encrypted');
 
 // secret key should be 32 bytes hex encoded (64 characters)

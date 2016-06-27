@@ -1,0 +1,5 @@
+--reporter spec
+--check-leaks
+--bail
+--compilers js:babel-register
+--require babel-polyfill

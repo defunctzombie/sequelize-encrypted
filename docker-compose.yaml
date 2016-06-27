@@ -1,0 +1,13 @@
+version: '2'
+services:
+    db:
+        image: postgres:9.5.3
+
+    app:
+        build: .
+        links:
+            - db
+        command: sleep infinity
+        volumes:
+            - .:/app
+            - /app/node_modules
