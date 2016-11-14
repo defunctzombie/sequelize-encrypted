@@ -54,17 +54,27 @@ EncryptedField.prototype.vault = function(name) {
     }
 };
 
-EncryptedField.prototype.field = function(name) {
+EncryptedField.prototype.field = function(name, config) {
     var self = this;
+    config = config || {};
+    config.validate = config.validate || {};
+
+    var hasValidations = [undefined,null].indexOf(typeof config.validate) === -1;
 
     if (!self.encrypted_field_name) {
         throw new Error('you must initialize the vault field before using encrypted fields');
     }
+
     var encrypted_field_name = self.encrypted_field_name;
 
     return {
-        type: self.Sequelize.VIRTUAL,
+        type: self.Sequelize.VIRTUAL(config.type || null),
         set: function set_encrypted(val) {
+
+            if (hasValidations) {
+                this.setDataValue(name, val);
+            }
+
             // use `this` not self because we need to reference the sequelize instance
             // not our EncryptedField instance
             var encrypted = this[encrypted_field_name];
@@ -73,8 +83,11 @@ EncryptedField.prototype.field = function(name) {
         },
         get: function get_encrypted() {
             var encrypted = this[encrypted_field_name];
-            return encrypted[name];
-        }
+            var val = encrypted[name];
+            return ([undefined, null].indexOf(val) === -1) ? val : config.defaultValue;
+        },
+        allowNull: ([undefined, null].indexOf(config.allowNull) === -1) ? config.allowNull : true,
+        validate: config.validate
     }
 };
 

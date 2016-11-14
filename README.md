@@ -17,7 +17,17 @@ var User = sequelize.define('user', {
 
     // encrypted virtual fields
     private_1: enc_fields.field('private_1'),
-    private_2: enc_fields.field('private_2')
+
+    // Optional second argument allows you
+    // to pass in a validation configuration
+    // as well as an optional return type
+    private_2: enc_fields.field('private_2', {
+      type: Sequelize.TEXT,
+      validate: {
+        isInt: true  
+      },
+      defaultValue: null
+    })
 })
 
 var user = User.build();

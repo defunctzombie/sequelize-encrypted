@@ -58,4 +58,56 @@ describe('sequelize-encrypted', () => {
         assert.equal(found.private_1, undefined);
     });
 
+    it('should support validation', async() => {
+      const vault = EncryptedField(Sequelize, key2);
+      const ValidUser = sequelize.define('validUser', {
+          name: Sequelize.STRING,
+          encrypted: vault.vault('encrypted'),
+
+          // encrypted virtual fields
+          private_1: vault.field('private_1', {
+            type: Sequelize.INTEGER,
+            validate: {
+              notEmpty: true
+            }
+          })
+      });
+      const user = ValidUser.build();
+      user.private_1 = '';
+
+      const res = await user.validate();
+      assert.equal(res.message, 'Validation error: Validation notEmpty failed');
+    });
+
+    it('should support defaultValue', async() => {
+      const vault = EncryptedField(Sequelize, key2);
+      const ValidUser = sequelize.define('validUser', {
+          name: Sequelize.STRING,
+          encrypted: vault.vault('encrypted'),
+
+          // encrypted virtual fields
+          private_1: vault.field('private_1', {
+            defaultValue: 'hello'
+          })
+      });
+      const user = ValidUser.build();
+      assert.equal(user.private_1, 'hello');
+    });
+
+    it('should support allowNull', async() => {
+      const vault = EncryptedField(Sequelize, key2);
+      const ValidUser = sequelize.define('validUser', {
+          name: Sequelize.STRING,
+          encrypted: vault.vault('encrypted'),
+
+          // encrypted virtual fields
+          private_1: vault.field('private_1', {
+            allowNull: false
+          })
+      });
+      const user = ValidUser.build();
+      const res = await user.validate();
+      assert.equal(res.message,'notNull Violation: private_1 cannot be null');
+    });
+
 });
